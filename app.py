@@ -1,39 +1,27 @@
-# app.py
-
 from flask import Flask, request, jsonify
-from script import run_tool
+from flask_cors import CORS
+import os
 
 app = Flask(__name__)
-@app.route("/ping", methods=["GET"])
-def ping():
-    return "PING OK"
-@app.route("/", methods=["GET"])
+CORS(app)
+
+@app.route("/")
 def home():
     return "Backend is running"
 
 @app.route("/search", methods=["POST"])
 def search():
     data = request.get_json()
-
     phone = data.get("number")
 
-    if not phone or not phone.isdigit() or len(phone) != 10:
-        return jsonify({
-            "status": "error",
-            "message": "Invalid phone number"
-        })
+    if not phone:
+        return jsonify({"status": "error", "message": "No number"})
 
-    try:
-        result = run_tool(phone)
-        return jsonify({
-            "status": "success",
-            "data": result
-        })
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e)
-        })
+    return jsonify({
+        "status": "success",
+        "data": f"Test response for {phone}"
+    })
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
