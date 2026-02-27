@@ -4,7 +4,9 @@ from flask import Flask, request, jsonify
 from script import run_tool
 
 app = Flask(__name__)
-
+@app.route("/ping", methods=["GET"])
+def ping():
+    return "PING OK"
 @app.route("/", methods=["GET"])
 def home():
     return "Backend is running"
